@@ -13,13 +13,13 @@ class UserController {
 
   static addNewUser(req, res) {
     console.log("register user");
+    const { email, lastname, age } = req.body;
     try {
-      let { email, firstname, lastname, age } = req.body;
       let userValues = {
         email: email,
-        firstname: firstname,
+        firstname: req.body.firstname,
         lastname: lastname,
-        age: req.body.age,
+        age: age,
       };
 
       Users.RegisterNewUser(userValues, (error, userResult) => {
