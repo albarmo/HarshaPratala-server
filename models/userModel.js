@@ -1,5 +1,4 @@
 const client = require("../config/connection");
-
 class Users {
   constructor(id, email, firstname, lastname, age) {
     this.id = id;
@@ -9,26 +8,25 @@ class Users {
     this.age = age;
   }
 
-  static getAllUser(cb) {
+  static getAllUser(callback) {
     const qureyGetAllUsers = `
         SELECT * FROM "users"
         `;
     client.query(qureyGetAllUsers, (err, res) => {
       if (err) {
-        cb(err, null);
+        callback(err, null);
       } else {
         const data = res.rows;
         const users = data.map(
           (el) => new Users(el.id, el.email, el.firstname, el.lastname, el.age)
         );
-        cb(null, users);
+        callback(null, users);
       }
     });
   }
 
   static RegisterNewUser(values, callback) {
-    console.log("model register user");
-    const { id, email, firstname, lastname, age } = values;
+    const { email, firstname, lastname, age } = values;
     const queryRegisterNewUser = `
           INSERT INTO "users"
           ("email", "firstname", "lastname", "age")
@@ -50,6 +48,41 @@ class Users {
           newUser.age
         );
         callback(null, newUser);
+      }
+    });
+  }
+
+  static updateUser(id, email, firstname, lastname, age, callback) {
+    const updateQuery = `
+    UPDATE "users"
+    SET
+    "email" = $1,
+    "firstname" = $2,
+    "lastname" = $3,
+    "age" = $4
+    WHERE 
+    id = $5;
+    `;
+    let params = [email, firstname, lastname, age, id];
+    client.query(updateQuery, params, (err, result) => {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, result);
+      }
+    });
+  }
+
+  static deleteUser(id, callback) {
+    console.log("delete user model");
+    let queryDelete = `DELETE FROM "users" WHERE id = $1;`;
+    let params = [id];
+
+    client.query(queryDelete, params, (err, res) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, res);
       }
     });
   }
