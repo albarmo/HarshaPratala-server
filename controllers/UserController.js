@@ -42,13 +42,6 @@ class UserController {
     let id = req.params.id;
     const { email, firstname, lastname, age } = req.body;
 
-    // let userValues = {
-    //   email: req.body.email,
-    //   firstname: req.body.firstname,
-    //   lastname: req.body.lastname,
-    //   age: req.body.age,
-    // };
-
     Users.updateUser(id, email, firstname, lastname, age, (err, userResult) => {
       if (err) {
         res.status(500).json({ message: err.message });
